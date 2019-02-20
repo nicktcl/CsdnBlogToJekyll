@@ -1,6 +1,4 @@
-# 将csdn的博客爬取到本地并输出为jekyll可解析的
-
-# markdown格式，同时保存博客的图片到本地
+# 将csdn的博客爬取到本地并输出为jekyll可解析的markdown格式，同时保存博客的图片到本地
 
 ## 前言
 
@@ -357,6 +355,13 @@ if __name__ == "__main__":
     start_spider(username)              # 开始爬取
     print('successful!')                # 因为是死循环一直爬取，所以一般需要手动停止
 ```
+
+
+
+## 项目地址：
+
+[CsdnBlogToJekyll](https://github.com/nicktcl/CsdnBlogToJekyll)，😝欢迎 star ，欢迎Fork! 
+
 
 
 
