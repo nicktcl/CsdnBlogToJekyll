@@ -154,6 +154,7 @@ def CrawlingItemBlog(base_url, id):
         # text_utf8_right = text_utf8.replace('?x-oss-\n', '?x-oss-')
         # print(text_utf8_right)
         text_utf8_right = text_utf8_right.replace('(//img-blog', '(http://img-blog')
+        text_utf8_right = text_utf8_right.decode("utf-8")
 
         # 有的文章名字特殊，会新建文件失败
         try:
