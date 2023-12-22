@@ -110,7 +110,6 @@ def CrawlingItemBlog(base_url, id):
         time = soup.find(attrs={'class': 'time'}).text
      
         time = re.match(".*(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}).*", time).group(1)
-        print(time, "9999999")
         s_time0 = time.split(' ')
         s_time1 = s_time0[0].split('-')
        
@@ -119,7 +118,6 @@ def CrawlingItemBlog(base_url, id):
         month = s_time1[1]
         day = s_time1[2]
         minite = s_time0[1].split(':')[1]
-        print(s_time1, "1111000000")
 
         jekyll_date = 'date:   ' + year + '-' + month + '-' + day + ' ' + minite + '\n'
 
