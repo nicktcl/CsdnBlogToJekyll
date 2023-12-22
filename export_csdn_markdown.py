@@ -163,9 +163,9 @@ def CrawlingItemBlog(base_url, id):
         # 有的文章名字特殊，会新建文件失败
         try:
             # 写入文件
-            md_file_name = './_posts/' + year + '-' + month + '-' + day + '-' + file_name + '.markdown'
+            md_file_name = './_posts/' + year + '-' + month + '-' + day + '-' + file_name + '.md'
             f = codecs.open(md_file_name, 'w', encoding='utf-8')
-            jekyll_str = '---\n' + 'layout:  post\n' + jekyll_title + jekyll_date + 'author:  "唐传林"\nheader-img: "img/post-bg-2015.jpg"\ncatalog:   false\n' + jekyll_categories + jekyll_tags + '\n---\n'
+            jekyll_str = '---\n' + 'layout:  post\n' + jekyll_title + jekyll_date + 'author:  "ray.zh"\nheader-img: "img/post-bg-2015.jpg"\ncatalog:   false\n' + jekyll_categories + jekyll_tags + '\n---\n'
 
             f.write(jekyll_str)
             f.write(text_utf8_right)
@@ -235,10 +235,9 @@ def start_spider(username):
 
     number = 1      # 记录当前是第几个article_list
     count = 0       # 记录当前是第几篇文章
-    print(start_url)
+    # print(start_url)
     # 开始爬取第一个article_list，返回信息在html中
     html = request_get(start_url)
-    print("html", html)   
     # 这个循环是对博客的article_list页面的循环
     while html.status_code == 200:          # 200说明request_get完成，这是因为http协议里面定义的状态码
         # 获取下一页的 url
@@ -257,13 +256,11 @@ def start_spider(username):
         for elem in cur_article_list_page:
             
             item_content = elem.attrib
-            print(item_content)
             # 通过对比拿到的数据和网页中的有效数据发现返回每一个article_list中的list都有一两个多余元素，每个多余元素都有style属性，利用这一特点进行过滤
             if item_content.has_key('style'):
                 continue
             else:
                 if item_content.has_key('data-articleid'):
-                    print(item_content)
                     # 拿到文章对应的articleid
                     articleid = item_content['data-articleid']
                     # 用于打印进度
