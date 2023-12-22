@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.7
 # coding=utf-8
 
-
+import re
 import os           # 多种操作系统接口：该模块提供了一种使用操作系统相关功能的便携方式。
 import sys          # 系统特定的参数和功能：该模块提供对解释器使用或维护的一些变量的访问，以及与解释器强烈交互的函数。
 # 在程序中加入以下代码：将编码设置为utf8
@@ -51,6 +51,7 @@ def CrawlingItemBlog(base_url, id):
     url = second_url + id
     # 发送request请求并接受返回值
     item_html = request_get(url)
+    print("---", url)
     if item_html.status_code == 200:    # 200说明request_get完成，这是因为http协议里面定义的状态码
         '''
         需要的信息：
@@ -82,7 +83,7 @@ def CrawlingItemBlog(base_url, id):
         title_article = soup.find(attrs={'class': 'title-article'})
         # 这里是将标题作为最后存储的文件名
         file_name = title_article.get_text()
-        print(" 该篇博客标题为：" + file_name)
+        print(" 该篇博客标题为：" + file_name.encode("utf-8"))
         title_article = title_article.prettify()
 
         # 设置jekyll格式博客开头的格式（title）
@@ -105,14 +106,20 @@ def CrawlingItemBlog(base_url, id):
             jekyll_categories = 'categories:\n' + '- ' + jekyll_categories + '\n'
 
         # 获取文章发表时间
-        time = soup.find(attrs={'class': 'time'}).get_text()
-        s_time1 = time.split('年')
+        
+        time = soup.find(attrs={'class': 'time'}).text
+     
+        time = re.match(".*(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}).*", time).group(1)
+        print(time, "9999999")
+        s_time0 = time.split(' ')
+        s_time1 = s_time0[0].split('-')
+       
+        
         year = s_time1[0]
-        s_time2 = s_time1[1].split('月')
-        month = s_time2[0]
-        s_time3 = s_time2[1].split('日')
-        day = s_time3[0]
-        minite = s_time3[1].strip()
+        month = s_time1[1]
+        day = s_time1[2]
+        minite = s_time0[1].split(':')[1]
+        print(s_time1, "1111000000")
 
         jekyll_date = 'date:   ' + year + '-' + month + '-' + day + ' ' + minite + '\n'
 
@@ -230,28 +237,35 @@ def start_spider(username):
 
     number = 1      # 记录当前是第几个article_list
     count = 0       # 记录当前是第几篇文章
-
+    print(start_url)
     # 开始爬取第一个article_list，返回信息在html中
     html = request_get(start_url)
-
+    print("html", html)   
     # 这个循环是对博客的article_list页面的循环
     while html.status_code == 200:          # 200说明request_get完成，这是因为http协议里面定义的状态码
         # 获取下一页的 url
         selector = etree.HTML(html.text)
 
+        #print(html.text.encode("utf-8"))
         # cur_article_list_page[0]就是当前article_list页面中的文章的list
-        cur_article_list_page = selector.xpath('//*[@id="mainBox"]/main/div[2]')
-        d = cur_article_list_page[0].xpath('//*[@id="mainBox"]/main/div[2]/div[2]/h4/a')
-        l = cur_article_list_page[0].findall('data-articleid')
+        cur_article_list_page = selector.xpath('//*[@id="articleMeList-blog"]/div[2]/div')
+        # cur_article_list_page = '//*[@id="articleMeList-blog"]/div[2]/div'
+        #d = selector2.xpath('//*[@id="mainBox"]/main/div[2]/div[2]/div/h4/a')
+        #print(d)
+#        l = selector.findall('[data-articleid]')
+        #l = selector3.xpath('//*[@id="articleMeList-blog"]/div[2]/div')
 
         # 这个循环是对你每一个article_list中的那些文章的循环
-        for elem in cur_article_list_page[0]:
+        for elem in cur_article_list_page:
+            
             item_content = elem.attrib
+            print(item_content)
             # 通过对比拿到的数据和网页中的有效数据发现返回每一个article_list中的list都有一两个多余元素，每个多余元素都有style属性，利用这一特点进行过滤
             if item_content.has_key('style'):
                 continue
             else:
                 if item_content.has_key('data-articleid'):
+                    print(item_content)
                     # 拿到文章对应的articleid
                     articleid = item_content['data-articleid']
                     # 用于打印进度
@@ -267,7 +281,7 @@ def start_spider(username):
 
 
 if __name__ == "__main__":
-    username = 'Tang_Chuanlin'        # CSDN 个人主页地址中的用户名，例如https://blog.csdn.net/Tang_Chuanlin中的Tang_Chuanlin
+    username = 'jioulongzi'        # CSDN 个人主页地址中的用户名，例如https://blog.csdn.net/Tang_Chuanlin中的Tang_Chuanlin
     if os.path.exists('./imgs/'):      # 判断当前路径下是否存在"imgs"文件夹
         shutil.rmtree('./imgs/')       # 若存在，则删除该文件夹，目的是删除之前爬取获得的图片
     mkdir('./imgs/')                   # "imgs"新建文件夹
