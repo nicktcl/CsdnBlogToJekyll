@@ -450,5 +450,12 @@ title中可带有单引号。
 
 爬虫保存的markdown文件中的图片链接有些为http协议的，jekyll生成的页面中这种图片有些会显示不正常，所以图片链接最好改为http协议。程序中已经将图片链接中的https替换为了http。
 
+####  6、windows命令行乱码
 
+执行`chcp 65001`
+
+
+####  7、执行报错`LookupError: unknown encoding: cp65001`
+
+cmd执行报错`LookupError: unknown encoding: cp65001`， 执行`set PYTHONIOENCODING=UTF-8`
 
